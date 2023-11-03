@@ -15,7 +15,7 @@
   "extensionDependencies": [
     "vscode.git"
   ],
-  "publisher": "Arend Hosman",
+  "publisher": "arondius",
   "license": "MIT",
   "repository": {
     "type": "git",
