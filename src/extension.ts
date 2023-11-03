@@ -3,22 +3,15 @@ import * as vscode from 'vscode';
 let previousBranch: string | undefined;
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
+
 	// Locate the Git repositories when activated
 	const gitExtension = vscode.extensions.getExtension<any>('vscode.git')?.exports;
 	const api = gitExtension?.getAPI(1);
 	const repo = api?.repositories[0];
 
-	const timeout = async () => {
-		while (!repo?.state.HEAD?.name) {
-			logError({ message: 'Waiting for repo' });
-			await new Promise(resolve => setTimeout(resolve, 10));
-		}
-	};
-	await timeout();
-
 	// Initiate the previous branch
-	previousBranch = repo?.state.HEAD.name;
-	// updateCommitMessage(repo, previousBranch!);
+	previousBranch = repo?.state?.HEAD?.name || undefined;
+	updateCommitMessage(repo, previousBranch!);
 	// Monitor the Git repository for branch changes
 	repo?.state.onDidChange(() => {
 		try {
