@@ -1,3 +1,4 @@
+import { InputBox } from "./git.d";
 import * as vscode from "vscode";
 
 let previousBranch: string | undefined;
@@ -16,32 +17,30 @@ export async function activate(
   if (previousBranch) {
     updateCommitMessage(repo, previousBranch!);
   }
-  // Monitor the Git repository for branch changes
+  // Monitor the Git repository for changes
   repo?.state.onDidChange(() => {
-    try {
-      // Check if the branch has been changed
-      const currentBranch = repo?.state.HEAD.name;
-      if (currentBranch !== previousBranch) {
-        updateCommitMessage(repo, currentBranch!);
-        previousBranch = currentBranch;
-      }
-    } catch (error) {
-      // Log error for debugging
-      logError(error);
+    console.log("State changed");
+    handleUpdateCommitMessage(repo);
+  });
+}
 
-      // Provide clear feedback to the user
-      vscode.window.showErrorMessage(
-        "An error occurred while updating the commit message."
-      );
+function handleUpdateCommitMessage(repo: any): void {
+  try {
+    // Check if the branch has been changed
+    const currentBranch = repo?.state.HEAD.name;
+    if (!repo.inputBox.value.startsWith(`${currentBranch}:`)) {
+      updateCommitMessage(repo, currentBranch!);
+      previousBranch = currentBranch;
     }
-  });
+  } catch (error) {
+    // Log error for debugging
+    logError(error);
 
-  // Handle deactivation (cleanup, if necessary)
-  context.subscriptions.push({
-    dispose: () => {
-      // Example: Remove any temporary files or close connections if needed
-    },
-  });
+    // Provide clear feedback to the user
+    vscode.window.showErrorMessage(
+      "An error occurred while updating the commit message."
+    );
+  }
 }
 
 // Function to update the commit message
