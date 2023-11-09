@@ -1,11 +1,13 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 let previousBranch: string | undefined;
 
-export async function activate(context: vscode.ExtensionContext): Promise<void> {
-
+export async function activate(
+  context: vscode.ExtensionContext
+): Promise<void> {
 	// Locate the Git repositories when activated
-	const gitExtension = vscode.extensions.getExtension<any>('vscode.git')?.exports;
+  const gitExtension =
+    vscode.extensions.getExtension<any>("vscode.git")?.exports;
 	const api = gitExtension?.getAPI(1);
 	const repo = api?.repositories[0];
 
@@ -26,7 +28,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 			logError(error);
 
 			// Provide clear feedback to the user
-			vscode.window.showErrorMessage('An error occurred while updating the commit message.');
+      vscode.window.showErrorMessage(
+        "An error occurred while updating the commit message."
+      );
 		}
 	});
 
@@ -34,15 +38,15 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 	context.subscriptions.push({
 		dispose: () => {
 			// Example: Remove any temporary files or close connections if needed
-		}
+    },
 	});
 }
 
 // Function to update the commit message
 function updateCommitMessage(repo: any, branchName: string): void {
 	// Validate input (simplified example)
-	if (typeof branchName !== 'string' || !branchName.length) {
-		throw new Error('Invalid branch name.');
+  if (typeof branchName !== "string" || !branchName.length) {
+    throw new Error("Invalid branch name.");
 	}
 
 	// Set the commit message
@@ -52,7 +56,7 @@ function updateCommitMessage(repo: any, branchName: string): void {
 // Function to log errors (simplified example)
 function logError(error: any): void {
 	// Create or retrieve an output channel to log errors
-	const outputChannel = vscode.window.createOutputChannel('My Extension Logs');
+  const outputChannel = vscode.window.createOutputChannel("My Extension Logs");
 	outputChannel.appendLine(`[${new Date().toISOString()}] ${error.message}`);
 	outputChannel.show();
 }
